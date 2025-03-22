@@ -6,6 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import { AIProviderSwitch } from '../AIProviderSwitch';
 import { generateImage } from '@/lib/imageGeneration';
 
+const PROMPT_EXAMPLES = [
+  {
+    title: "Peaceful Garden",
+    prompt: "A peaceful garden bathed in the warm glow of the morning sun. A lone figure, dressed in simple yet elegant clothes, tends to the vibrant flowers, their hands gently brushing against the petals. Butterflies flutter around, and a small fountain trickles softly in the background. Lush green vines climb an old wooden trellis, while a cherry blossom tree in full bloom casts delicate pink petals into the breeze. The scene exudes tranquility, harmony, and a deep connection between humans and nature."
+  },
+  {
+    title: "Space Launch",
+    prompt: "A sleek, futuristic rocket poised on a high-tech launchpad beneath a vast starry sky. The rocket's metallic body gleams under powerful floodlights, with intricate details hinting at advanced engineering. As it prepares for takeoff, billowing clouds of steam and fire create a dramatic display, while in the background, a vibrant aurora illuminates the horizon and distant planets hint at unexplored frontiers. The scene captures the excitement and mystery of space exploration."
+  }
+];
+
 export function ImageGenerationInterface() {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState('');
@@ -74,6 +85,10 @@ export function ImageGenerationInterface() {
     } catch (err) {
       console.error('Failed to copy:', err);
     }
+  };
+
+  const handleExampleClick = (prompt: string) => {
+    setPrompt(prompt);
   };
 
   // Handle keyboard shortcut
@@ -145,7 +160,7 @@ export function ImageGenerationInterface() {
             </div>
           </div>
 
-          {/* Empty State Message */}
+          {/* Empty State with Examples */}
           {!prompt.trim() && !generatedImage && !error && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -154,12 +169,28 @@ export function ImageGenerationInterface() {
             >
               <Brain className="w-12 h-12 mx-auto mb-4 text-blue-500" />
               <h3 className="text-xl font-bold mb-2">AI Image Generation</h3>
-              <p className="text-[#8b949e] mb-4">
-                "I can turn your ideas into visual masterpieces. Let's create something amazing! 🎨"
+              <p className="text-[#8b949e] mb-6">
+                "I can turn your ideas into visual masterpieces. Try these examples or create your own! 🎨"
               </p>
-              <p className="text-sm text-[#8b949e]">
-                Describe what you want to see, and I'll generate a unique image for you.
-              </p>
+              
+              <div className="space-y-4">
+                <p className="text-sm text-[#8b949e] font-medium">Example Prompts:</p>
+                <div className="grid gap-4">
+                  {PROMPT_EXAMPLES.map((example, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleExampleClick(example.prompt)}
+                      className="cursor-pointer p-4 bg-[#1c2128] border border-[#30363d] rounded-lg hover:bg-[#2d333b] transition-colors text-left"
+                    >
+                      <h4 className="text-sm font-medium text-blue-400 mb-2">{example.title}</h4>
+                      <p className="text-xs text-[#8b949e] line-clamp-3">{example.prompt}</p>
+                      <button className="mt-2 text-xs text-blue-400 hover:text-blue-300">
+                        Use this prompt →
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </motion.div>
           )}
 

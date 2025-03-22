@@ -7,6 +7,25 @@ import { AIProviderSwitch } from '../AIProviderSwitch';
 import { getAIResponse, getTokenCount, type AIResponse } from '@/lib/ai';
 import ReactMarkdown from 'react-markdown';
 
+const RESEARCH_EXAMPLES = [
+  {
+    title: "Neural Network Architecture",
+    prompt: "Explain the architecture and working principles of Convolutional Neural Networks (CNNs) in computer vision. Include details about different layers, feature extraction, and practical applications in image recognition."
+  },
+  {
+    title: "Transfer Learning",
+    prompt: "What is transfer learning in machine learning? Explain its benefits, common approaches, and when it's most effective. Include practical examples of popular pre-trained models and their applications."
+  },
+  {
+    title: "Reinforcement Learning",
+    prompt: "Analyze the key components of reinforcement learning systems: agents, environments, rewards, and policies. How do algorithms like Q-learning and Deep Q Networks (DQN) work? Include real-world applications and challenges."
+  },
+  {
+    title: "Model Optimization",
+    prompt: "What are the best practices for optimizing machine learning models? Cover techniques for improving model performance, reducing overfitting, and handling computational constraints. Include specific examples and metrics."
+  }
+];
+
 export function ResearchInterface() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -64,6 +83,10 @@ export function ResearchInterface() {
       setLoading(false);
       setIsGenerating(false);
     }
+  };
+
+  const handleExampleClick = (prompt: string) => {
+    setQuery(prompt);
   };
 
   // Handle keyboard shortcut
@@ -188,7 +211,7 @@ export function ResearchInterface() {
             </>
           )}
 
-          {/* Empty State Message */}
+          {/* Empty State Message with Examples */}
           {!query.trim() && !response && !error && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -197,11 +220,32 @@ export function ResearchInterface() {
             >
               <Brain className="w-12 h-12 mx-auto mb-4 text-blue-500" />
               <h3 className="text-xl font-bold mb-2">Your AI Research Assistant</h3>
-              <p className="text-[#8b949e] mb-4">
+              <p className="text-[#8b949e] mb-6">
                 "I've done my PhD in everything and nothing simultaneously. 
                 Quantum superposition of knowledge, you know? 🤓"
               </p>
-              <p className="text-sm text-[#8b949e]">
+              
+              <div className="space-y-4 mt-8">
+                <p className="text-sm text-[#8b949e] font-medium">Research Topic Examples:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {RESEARCH_EXAMPLES.map((example, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleExampleClick(example.prompt)}
+                      className="cursor-pointer p-4 bg-[#1c2128] border border-[#30363d] rounded-lg hover:bg-[#2d333b] transition-colors text-left"
+                    >
+                      <h4 className="text-sm font-medium text-blue-400 mb-2">{example.title}</h4>
+                      <p className="text-xs text-[#8b949e] line-clamp-3">{example.prompt}</p>
+                      <button className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                        Research this topic
+                        <Search className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-sm text-[#8b949e] mt-6">
                 Ask me anything about machine learning, and I'll give you a 
                 comprehensive analysis faster than you can say "neural network"!
               </p>
