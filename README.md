@@ -85,6 +85,42 @@ src/
 4. Push to branch (`git push origin feature/Enhancement`)
 5. Open a Pull Request
 
+## How to Create a Pull Request
+
+1. Ensure your fork is up to date with the main repository:
+```bash
+git remote add upstream https://github.com/bniladridas/keynote-niladridas.git
+git fetch upstream
+git checkout main
+git merge upstream/main
+```
+
+2. Create and switch to your feature branch:
+```bash
+git checkout -b feature/YourFeatureName
+```
+
+3. Make your changes and stage them:
+```bash
+git add .
+```
+
+4. Commit your changes with a descriptive message:
+```bash
+git commit -m "feat: add your feature description"
+```
+
+5. Push your branch to your fork:
+```bash
+git push origin feature/YourFeatureName
+```
+
+6. Visit the original repository on GitHub and click "New Pull Request"
+7. Select your branch from your fork and create the pull request with:
+   - A clear title
+   - Detailed description of changes
+   - Any relevant issue numbers
+
 ## Author
 
 Niladri Das
@@ -95,7 +131,3 @@ Niladri Das
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-Built with modern technology and powered by AI.
