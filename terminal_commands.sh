@@ -56,9 +56,21 @@ git commit -m "Add: Research topic examples to deep research interface"
 git push origin main
 
 # 16. Update terminal commands
+# 1. First, fetch the latest changes
+git fetch origin main
+
+# 2. Pull the latest changes from remote
+git pull origin main
+
+# If there are merge conflicts, resolve them and then:
 git add terminal_commands.sh
 git commit -m "Update: Add recent Git commands to terminal_commands.sh"
+
+# 3. Now push your changes
 git push origin main
+
+# If you're absolutely sure you want to overwrite remote changes (use with caution):
+# git push -f origin main
 
 # --- Useful Git commands for reference ---
 # Check status: git status
