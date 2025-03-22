@@ -45,8 +45,27 @@ git add src/components/OGPreview.tsx
 git commit -m "Update: Set OG preview URLs to new Vercel deployment"
 git push origin main
 
+# 14. Add example prompts to image generation
+git add src/components/sections/ImageGenerationInterface.tsx
+git commit -m "Add: Example prompts to image generation interface"
+git push origin main
+
+# 15. Add research examples
+git add src/components/sections/ResearchInterface.tsx
+git commit -m "Add: Research topic examples to deep research interface"
+git push origin main
+
+# 16. Update terminal commands
+git add terminal_commands.sh
+git commit -m "Update: Add recent Git commands to terminal_commands.sh"
+git push origin main
+
 # --- Useful Git commands for reference ---
 # Check status: git status
 # View commit history: git log
 # View remote URLs: git remote -v
 # Pull latest changes: git pull origin main
+# Create new branch: git checkout -b feature/new-feature
+# Switch branches: git checkout branch-name
+# Merge branches: git merge branch-name
+# Delete branch: git branch -d branch-name
