@@ -13,7 +13,9 @@ export function OGPreview() {
     alternateUrl: domains.secondary,
     title: 'ML Learning Platform',
     description: 'Your interactive guide to mastering machine learning concepts. Built with practical implementation experience and industry best practices.',
-    image: isDevelopment ? 'http://localhost:5173/og-image.png' : `${domains.primary}/og-image.png`,
+    image: isDevelopment 
+      ? 'http://localhost:5173/og-image.png' 
+      : 'https://raw.githubusercontent.com/bniladridas/keynote.niladridas/main/public/og-image.png',
   };
 
   return (

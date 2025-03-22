@@ -11,8 +11,8 @@ interface SEOProps {
 export function SEO({ 
   title = 'ML Learning Platform',
   description = 'Your interactive guide to mastering machine learning concepts',
-  image = '/og-image.png',
-  url = 'https://keynote.niladridas.vercel.app'
+  image = 'https://raw.githubusercontent.com/bniladridas/keynote.niladridas/main/public/og-image.png',
+  url = 'https://keynote-niladridas-ecru.vercel.app'
 }: SEOProps) {
   return (
     <Helmet>
