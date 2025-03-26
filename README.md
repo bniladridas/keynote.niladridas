@@ -7,18 +7,37 @@ A modern presentation and learning platform powered by Google Gemini AI.
 [![React](https://img.shields.io/badge/React-18.3-blue)](https://reactjs.org/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
+![OG Preview](public/og-image.png)
+
 ## Overview
 
-This platform combines presentation capabilities with interactive learning features, leveraging Google Gemini AI for dynamic content generation. It offers a unique blend of presentation tools and educational resources, making it ideal for both creating engaging presentations and learning complex concepts.
+This platform combines presentation capabilities with interactive learning features, leveraging Google's latest AI models. It offers a unique blend of presentation tools and educational resources, making it ideal for both creating engaging presentations and learning complex concepts.
+
+## AI Integration
+
+This platform legally integrates with Google's AI services:
+- **Gemini 2.5 Pro** (model: `gemini-2.5-pro-exp-03-25`) for text generation and interactions
+- **Gemini 2.0 Flash** (model: `gemini-2.0-flash-exp-image-generation`) for image generation
+
+All AI features are implemented in full compliance with Google's terms of service and usage guidelines. We maintain complete transparency about the AI models used in this platform.
 
 ## Core Features
 
-- **AI-Powered Content**: Dynamic content generation using Google Gemini AI
+- **AI-Powered Content**: Dynamic content generation using Google Gemini 2.5 Pro
+- **Image Generation**: AI-powered image creation using Gemini 2.0 Flash
 - **Interactive Interface**: Seamless presentation and learning experience
 - **Research Interface**: AI-assisted research and content exploration
-- **Image Generation**: AI-powered image generation capabilities
 - **Responsive Design**: Optimized for all device sizes
 - **Mathematical Support**: KaTeX integration for mathematical formulas
+
+## Legal Compliance
+
+This platform:
+- Uses official Google AI APIs with proper authentication
+- Maintains transparency about AI capabilities and limitations
+- Follows all terms of service and usage guidelines
+- Requires proper API keys and authentication for AI features
+- Does not make false claims about AI capabilities
 
 ## Technology Stack
 

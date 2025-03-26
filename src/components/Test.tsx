@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getAIResponse } from '@/lib/ai';
-import { Button, CopyButton } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Code, Brain, Wand, Loader2, Trash2 } from 'lucide-react';
+import { ArrowLeft, Code, Brain, Wand, Loader2, Trash2, Copy, Check } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { cn } from '@/lib/utils';
 
 interface TestResult {
   type: 'code' | 'explanation' | 'creative';
   prompt: string;
   response: string;
+  timestamp: number;
 }
 
 export function Test() {
@@ -17,6 +20,7 @@ export function Test() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentTest, setCurrentTest] = useState<string | null>(null);
+  const [copied, setCopied] = useState<number | null>(null);
 
   const tests = [
     {
@@ -32,15 +36,15 @@ export function Test() {
       name: 'Technical Concepts',
       description: 'Get clear explanations of complex topics',
       icon: Brain,
-      prompt: 'Explain how React\'s Virtual DOM works and why it improves performance. Keep it clear and concise.',
+      prompt: "Explain how React's Virtual DOM works and why it improves performance. Keep it clear and concise.",
       className: 'bg-gradient-to-br from-green-500 to-green-600'
     },
     {
       type: 'creative' as const,
-      name: 'Creative Writing',
-      description: 'Generate engaging stories and content',
+      name: 'Creative Solutions',
+      description: 'Generate innovative approaches to problems',
       icon: Wand,
-      prompt: 'Write a short, creative story about a developer debugging a mysterious bug in their code. Make it engaging and fun.',
+      prompt: 'Suggest three creative ways to optimize a React application\'s performance.',
       className: 'bg-gradient-to-br from-purple-500 to-purple-600'
     }
   ];
@@ -53,7 +57,6 @@ export function Test() {
     setCurrentTest(type);
 
     try {
-      // Enhanced prompt based on test type
       let enhancedPrompt = prompt;
       if (type === 'code') {
         enhancedPrompt = `${prompt}\n\nPlease format the response in markdown with proper code blocks and explanations.`;
@@ -70,16 +73,22 @@ export function Test() {
       setResults(prev => [{
         type,
         prompt,
-        response: aiResponse.text
+        response: aiResponse.text,
+        timestamp: Date.now()
       }, ...prev]);
 
     } catch (err) {
-      console.error('Test error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred while generating the response');
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
       setCurrentTest(null);
     }
+  };
+
+  const copyToClipboard = async (text: string, timestamp: number) => {
+    await navigator.clipboard.writeText(text);
+    setCopied(timestamp);
+    setTimeout(() => setCopied(null), 2000);
   };
 
   const clearResults = () => {
@@ -88,108 +97,110 @@ export function Test() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            onClick={() => navigate('/')}
+            variant="ghost"
+            className="text-white hover:text-white/80"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          {results.length > 0 && (
             <Button
-              variant="ghost"
-              className="hover:bg-surface text-text-primary"
-              onClick={() => navigate('/')}
+              onClick={clearResults}
+              variant="destructive"
+              className="bg-red-500/20 hover:bg-red-500/30"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
+              <Trash2 className="mr-2 h-4 w-4" />
+              Clear Results
             </Button>
-            
-            {results.length > 0 && (
-              <Button
-                variant="outline"
-                onClick={clearResults}
-                className="text-red-400 border-red-400/20 hover:bg-red-400/10 hover:border-red-400/40"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Clear Results
-              </Button>
-            )}
-          </div>
+          )}
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-text-primary mb-4">AI Capabilities Test</h1>
-          <p className="text-text-secondary max-w-2xl mx-auto">
-            Explore different AI capabilities through these interactive tests. Each test demonstrates a unique aspect of the AI system.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {/* Test Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {tests.map((test) => (
-            <div
+            <motion.div
               key={test.type}
-              className="group bg-surface rounded-xl overflow-hidden border border-border/40 hover:border-border/80 transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              className={cn(
+                "rounded-xl p-6 text-white shadow-lg backdrop-blur-sm",
+                test.className
+              )}
             >
-              <div className={`${test.className} p-6 transition-all duration-300`}>
-                <test.icon className="h-8 w-8 text-white mb-4 transition-transform duration-300 group-hover:scale-110" />
-                <h3 className="text-lg font-semibold text-white mb-2">{test.name}</h3>
-                <p className="text-white/80 text-sm">{test.description}</p>
+              <div className="flex items-center mb-4">
+                <test.icon className="h-6 w-6 mr-3" />
+                <h3 className="text-xl font-semibold">{test.name}</h3>
               </div>
-              <div className="p-4 bg-surface">
+              <p className="text-white/80 mb-4">{test.description}</p>
+              <Button
+                onClick={() => runTest(test.type, test.prompt)}
+                disabled={loading && currentTest === test.type}
+                className="w-full bg-white/20 hover:bg-white/30"
+              >
+                {loading && currentTest === test.type ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Run Test'
+                )}
+              </Button>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Results Section */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="bg-red-500/20 text-red-200 p-4 rounded-lg mb-6"
+            >
+              {error}
+            </motion.div>
+          )}
+
+          {results.map((result) => (
+            <motion.div
+              key={result.timestamp}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-white/5 rounded-xl p-6 mb-6 backdrop-blur-sm"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center">
+                  {result.type === 'code' && <Code className="h-5 w-5 mr-2 text-blue-400" />}
+                  {result.type === 'explanation' && <Brain className="h-5 w-5 mr-2 text-green-400" />}
+                  {result.type === 'creative' && <Wand className="h-5 w-5 mr-2 text-purple-400" />}
+                  <h4 className="text-lg font-medium">
+                    {tests.find(t => t.type === result.type)?.name}
+                  </h4>
+                </div>
                 <Button
-                  onClick={() => runTest(test.type, test.prompt)}
-                  disabled={loading}
-                  variant="outline"
-                  className="w-full relative"
+                  onClick={() => copyToClipboard(result.response, result.timestamp)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-white/70 hover:text-white"
                 >
-                  {loading && currentTest === test.type ? (
-                    <>
-                      <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                      Processing...
-                    </>
+                  {copied === result.timestamp ? (
+                    <Check className="h-4 w-4" />
                   ) : (
-                    'Run Test'
+                    <Copy className="h-4 w-4" />
                   )}
                 </Button>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {error && (
-          <div className="p-4 mb-8 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
-
-        <div className="space-y-8">
-          {results.map((result, index) => (
-            <div
-              key={index}
-              className="bg-surface rounded-xl border border-border/40 overflow-hidden shadow-lg"
-            >
-              <div className="p-6 border-b border-border/40">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    {result.type === 'code' && <Code className="text-blue-400" />}
-                    {result.type === 'explanation' && <Brain className="text-green-400" />}
-                    {result.type === 'creative' && <Wand className="text-purple-400" />}
-                    <h3 className="font-semibold text-lg text-text-primary">
-                      {result.type.charAt(0).toUpperCase() + result.type.slice(1)} Response
-                    </h3>
-                  </div>
-                  <CopyButton content={result.response} />
-                </div>
-                <div className="bg-background/50 rounded-lg p-4 text-sm text-text-secondary">
-                  <strong className="text-text-primary">Prompt:</strong> {result.prompt}
-                </div>
-              </div>
-              <div className="p-6 bg-background/50 prose prose-invert max-w-none">
+              <div className="prose prose-invert max-w-none">
                 <ReactMarkdown>{result.response}</ReactMarkdown>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </AnimatePresence>
       </div>
     </div>
   );

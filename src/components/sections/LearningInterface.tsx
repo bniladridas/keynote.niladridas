@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as Tabs from '@radix-ui/react-tabs';
-import { Brain, BookOpen, Database, Code, BarChart, Rocket, ArrowLeft, Cpu, Settings, Sparkles, ChevronRight } from 'lucide-react';
+import { 
+  Brain, BookOpen, Database, Code, BarChart, 
+  Rocket, ArrowLeft, Cpu, Settings, Sparkles, 
+  ChevronRight, Blocks, Network 
+} from 'lucide-react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 import { LearningModule } from './LearningModule';
@@ -62,208 +66,198 @@ export function LearningInterface() {
   const navigate = useNavigate();
   const [selectedConcept, setSelectedConcept] = useState<string | null>(null);
   const [activeTopic, setActiveTopic] = useState(topics[0]);
-  
+
   return (
-    <div className="min-h-screen bg-transparent text-[#c9d1d9]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+    <div className="relative min-h-screen bg-[#0a0a0a] text-text-primary">
+      {/* Animated background patterns */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,.2)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] animate-[gradient_3s_linear_infinite] opacity-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(68,68,68,0.2),transparent)] animate-pulse" />
+        
+        {/* Decorative elements */}
+        <div className="absolute top-20 right-20 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
+        {/* Enhanced Header with glassmorphism */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 backdrop-blur-lg bg-white/5 p-4 rounded-xl border border-white/10 shadow-lg"
+        >
           <Button
             variant="ghost"
-            className="hover:bg-[#30363d] text-[#c9d1d9] group transition-all duration-300"
+            className="hover:bg-white/10 text-text-primary group transition-all duration-300"
             onClick={() => navigate('/')}
           >
             <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
             Back to Home
           </Button>
           <AIProviderSwitch />
-        </div>
+        </motion.div>
 
-        {/* AI Model Info Box */}
+        {/* Enhanced AI Model Info Box */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8 bg-gradient-to-br from-[#161b22] to-[#1c2128] border border-[#30363d] rounded-lg p-6 shadow-xl"
+          className="mb-8 bg-gradient-to-br from-[#1a1a1a] to-[#0d0d0d] rounded-2xl p-8 shadow-2xl border border-white/10 relative overflow-hidden"
         >
-          <div className="flex items-start gap-6">
+          {/* Decorative background elements */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl" />
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-500/20 rounded-full blur-2xl" />
+          </div>
+
+          <div className="flex items-start gap-8 relative z-10">
             <div className="flex-shrink-0">
               <div className="relative">
-                <Cpu className="w-8 h-8 text-[#58a6ff]" />
-                <div className="absolute inset-0 animate-ping opacity-20 bg-[#58a6ff] rounded-full" />
+                <div className="absolute inset-0 bg-purple-500/20 blur-2xl rounded-full" />
+                <div className="relative z-10 p-3 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl border border-white/10">
+                  <Cpu className="w-12 h-12 text-purple-400" />
+                </div>
               </div>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-[#58a6ff] to-[#a2d2ff] bg-clip-text text-transparent">
-                Powered by Gemini 2.0 Flash Lite 🚀
-              </h3>
-              <p className="text-[#c9d1d9] text-sm sm:text-base leading-relaxed">
-                Built for devs who appreciate clean code and fast feedback loops. 
-                This isn't your average learning platform – it's your AI-powered coding companion.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div className="space-y-3 bg-[#1c2128]/50 p-4 rounded-lg border border-[#30363d]/50">
-                  <h4 className="text-[#58a6ff] font-semibold flex items-center gap-2">
-                    <Settings className="w-4 h-4" />
-                    Tech Specs
-                  </h4>
-                  <ul className="space-y-2">
-                    {[
-                      '0.7 temperature for that perfect vibe',
-                      '2048 tokens for detailed explanations',
-                      'Optimized for rapid responses'
-                    ].map((spec, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm">
-                        <span className="text-[#58a6ff]">→</span>
-                        <span>{spec}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="space-y-3 bg-[#1c2128]/50 p-4 rounded-lg border border-[#30363d]/50">
-                  <h4 className="text-[#58a6ff] font-semibold flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    Vibe Check
-                  </h4>
-                  <ul className="space-y-2">
-                    {[
-                      'Clean, concise explanations',
-                      'Real-world code examples',
-                      'Built for modern developers'
-                    ].map((vibe, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm">
-                        <span className="text-[#58a6ff]">→</span>
-                        <span>{vibe}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 bg-[#1c2128]/50 rounded-lg border border-[#30363d]/50">
-                <h4 className="text-[#58a6ff] font-semibold flex items-center gap-2 mb-2">
-                  <Rocket className="w-4 h-4" />
-                  Quick Test Drive
-                </h4>
-                <p className="text-sm">
-                  Want to see it in action? Just add <code className="bg-[#2d333b] px-2 py-0.5 rounded text-[#c9d1d9]">/test</code> to the URL!
-                  Example: <code className="bg-[#2d333b] px-2 py-0.5 rounded text-[#c9d1d9]">localhost:3000/test</code>
+            <div className="space-y-6 flex-1">
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-text-primary flex items-center gap-3">
+                Gemini 2.5
+                  <span className="text-purple-400">
+                    <Sparkles className="w-6 h-6 animate-pulse" />
+                  </span>
+                </h3>
+                <p className="text-gray-400 text-sm sm:text-base leading-relaxed mt-2">
+                  Your AI-powered coding companion, built for developers who value clean code and rapid feedback.
                 </p>
               </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Tech Specs Card */}
+                <div className="space-y-3 bg-black/30 p-6 rounded-xl border border-white/5 hover:border-purple-500/30 transition-all duration-300 group">
+                  <h4 className="text-white font-semibold flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-purple-400 group-hover:rotate-90 transition-transform duration-500" />
+                    Tech Specs
+                  </h4>
+                  <ul className="space-y-3">
+                    {[
+                      'Temperature: 1.0 for creative responses',
+                      'Top-P: 0.95 for diverse outputs',
+                      'Top-K: 64 for broader sampling',
+                      '65,536 max output tokens',
+                      'Advanced context understanding'
+                    ].map((spec, i) => (
+                      <li key={i} className="flex items-center gap-2 text-sm text-gray-400">
+                        <span className="text-purple-400">→</span>
+                        {spec}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <p className="text-xs text-[#8b949e] italic mt-4">
-                Pro tip: The model is tuned for both beginners and experienced devs. 
-                No matter your skill level, we've got your back! 💫
-              </p>
+                {/* Features Card */}
+                <div className="space-y-3 bg-black/30 p-6 rounded-xl border border-white/5 hover:border-blue-500/30 transition-all duration-300 group">
+                  <h4 className="text-white font-semibold flex items-center gap-2">
+                    <Blocks className="w-4 h-4 text-blue-400 group-hover:rotate-180 transition-transform duration-500" />
+                    Features
+                  </h4>
+                  <ul className="space-y-3">
+                    {[
+                      'Real-time code analysis',
+                      'Context-aware suggestions',
+                      'Multi-language support'
+                    ].map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2 text-sm text-gray-400">
+                        <span className="text-blue-400">→</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Learning Path Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+        {/* Enhanced Topics Navigation */}
+        <Tabs.Root 
+          defaultValue="intro"
+          className="space-y-8"
+          onValueChange={(value) => {
+            setActiveTopic(topics.find(t => t.id === value) || topics[0]);
+            setSelectedConcept(null);
+          }}
         >
-          <h1 className="text-3xl sm:text-4xl font-bold mb-8 bg-gradient-to-r from-[#58a6ff] to-[#a2d2ff] bg-clip-text text-transparent">
-            Learning Path
-          </h1>
-
-          <Tabs.Root 
-            defaultValue="intro"
-            className="space-y-8"
-            onValueChange={(value) => {
-              setActiveTopic(topics.find(t => t.id === value) || topics[0]);
-              setSelectedConcept(null);
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <Tabs.List className="flex flex-wrap gap-3">
+            <Tabs.List className="flex flex-wrap gap-3 p-1 bg-black/20 backdrop-blur-lg rounded-xl border border-white/10">
               {topics.map((topic) => (
                 <Tabs.Trigger
                   key={topic.id}
                   value={topic.id}
-                  className="group flex items-center gap-2 px-4 py-3 rounded-lg bg-[#1c2128] hover:bg-[#2d333b] border border-[#30363d] transition-all duration-300 data-[state=active]:bg-[#58a6ff] data-[state=active]:text-white"
+                  className="group flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-white/5 transition-all duration-300 data-[state=active]:bg-white/10 data-[state=active]:text-purple-400"
                 >
                   <topic.icon className="h-5 w-5 group-hover:scale-110 transition-transform" />
                   <span className="text-sm font-medium">{topic.title}</span>
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
+          </motion.div>
 
-            {topics.map((topic) => (
-              <Tabs.Content
-                key={topic.id}
-                value={topic.id}
-                className="space-y-6 focus:outline-none"
-              >
-                {!selectedConcept ? (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                  >
-                    <div className="space-y-6">
-                      <h2 className="text-2xl sm:text-3xl font-bold text-[#58a6ff]">
-                        {topic.title}
-                      </h2>
-                      <p className="text-[#c9d1d9] text-sm sm:text-base leading-relaxed">
-                        {topic.content}
-                      </p>
-                      <div className="grid gap-3">
-                        {topic.concepts.map((concept) => (
-                          <Button 
-                            key={concept}
-                            className="w-full justify-start bg-[#1c2128] hover:bg-[#2d333b] border border-[#30363d] text-left p-4 transition-all duration-300 hover:translate-x-1 group"
-                            onClick={() => setSelectedConcept(concept)}
-                          >
-                            <ChevronRight className="mr-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                            {concept}
-                          </Button>
-                        ))}
-                      </div>
+          {/* Content Area */}
+          {topics.map((topic) => (
+            <Tabs.Content
+              key={topic.id}
+              value={topic.id}
+              className="focus:outline-none"
+            >
+              {!selectedConcept ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                >
+                  <div className="space-y-6">
+                    <h2 className="text-3xl font-bold text-text-primary">
+                      {topic.title}
+                    </h2>
+                    <p className="text-gray-400 leading-relaxed">
+                      {topic.content}
+                    </p>
+                    <div className="grid gap-3">
+                      {topic.concepts.map((concept) => (
+                        <Button 
+                          key={concept}
+                          onClick={() => setSelectedConcept(concept)}
+                          className="w-full justify-start bg-black/30 hover:bg-black/50 border border-white/10 hover:border-purple-500/30 text-left p-4 rounded-xl transition-all duration-300 group"
+                        >
+                          <ChevronRight className="mr-2 h-4 w-4 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                          {concept}
+                        </Button>
+                      ))}
                     </div>
-                    <div className="relative h-[300px] sm:h-[400px] rounded-xl overflow-hidden">
-                      <img
-                        src={topic.image}
-                        alt={topic.title}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1117] via-transparent to-transparent" />
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-6"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-2xl sm:text-3xl font-bold text-[#58a6ff]">
-                        {selectedConcept}
-                      </h2>
-                      <Button
-                        variant="ghost"
-                        className="hover:bg-[#30363d] group"
-                        onClick={() => setSelectedConcept(null)}
-                      >
-                        <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                        Back to Topics
-                      </Button>
-                    </div>
-                    <LearningModule 
-                      topic={activeTopic.title} 
-                      concept={selectedConcept} 
+                  </div>
+                  <div className="relative h-[400px] rounded-2xl overflow-hidden group">
+                    <img
+                      src={topic.image}
+                      alt={topic.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                  </motion.div>
-                )}
-              </Tabs.Content>
-            ))}
-          </Tabs.Root>
-        </motion.div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                  </div>
+                </motion.div>
+              ) : (
+                <LearningModule 
+                  topic={activeTopic.title} 
+                  concept={selectedConcept} 
+                />
+              )}
+            </Tabs.Content>
+          ))}
+        </Tabs.Root>
       </div>
     </div>
   );

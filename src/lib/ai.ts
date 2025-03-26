@@ -18,8 +18,9 @@ export interface AIResponse {
 const CONFIG = {
   temperature: 1,
   topP: 0.95,
-  topK: 40,
-  maxOutputTokens: 8192,
+  topK: 64,
+  maxOutputTokens: 65536,
+  responseMimeType: "text/plain",
 };
 
 class AIService {
@@ -62,11 +63,11 @@ class AIService {
     if (!this.geminiAI) return;
     
     const model = this.geminiAI.getGenerativeModel({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-2.5-pro-exp-03-25",
+      generationConfig: CONFIG,
     });
 
     this.chatSession = model.startChat({
-      generationConfig: CONFIG,
       history: [],
     });
   }
@@ -85,7 +86,10 @@ class AIService {
   public async countTokens(text: string): Promise<number> {
     if (!this.geminiAI) throw new Error('AI service not initialized');
     
-    const model = this.geminiAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+    const model = this.geminiAI.getGenerativeModel({ 
+      model: "gemini-2.5-pro-exp-03-25",
+      generationConfig: CONFIG,
+    });
     const result = await model.countTokens(text);
     return result.totalTokens;
   }

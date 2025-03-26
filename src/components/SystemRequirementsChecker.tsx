@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Cpu, Memory, HardDrive, Monitor, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { 
+  Cpu, Memory, HardDrive, Monitor, AlertTriangle, 
+  CheckCircle, XCircle, Battery, BatteryFull, BatteryWarning 
+} from 'lucide-react';
 import { motion } from 'framer-motion';
+
+// Add Battery interface
+interface BatteryStatus {
+  charging: boolean;
+  level: number;
+  chargingTime: number;
+  dischargingTime: number;
+}
 
 interface SystemSpecs {
   cpu: {
@@ -17,12 +28,14 @@ interface SystemSpecs {
   storage: {
     free: number; // in GB
   };
+  battery?: BatteryStatus;
 }
 
 export function SystemRequirementsChecker() {
   const [specs, setSpecs] = useState<SystemSpecs | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [batteryStatus, setBatteryStatus] = useState<BatteryStatus | null>(null);
 
   useEffect(() => {
     async function checkSystemSpecs() {
@@ -77,6 +90,47 @@ export function SystemRequirementsChecker() {
     checkSystemSpecs();
   }, []);
 
+  useEffect(() => {
+    async function getBatteryStatus() {
+      try {
+        // Check if the Battery API is available
+        if ('getBattery' in navigator) {
+          const battery: any = await (navigator as any).getBattery();
+          
+          const updateBatteryStatus = () => {
+            setBatteryStatus({
+              charging: battery.charging,
+              level: battery.level * 100,
+              chargingTime: battery.chargingTime,
+              dischargingTime: battery.dischargingTime
+            });
+          };
+
+          // Initial status
+          updateBatteryStatus();
+
+          // Add event listeners for battery status changes
+          battery.addEventListener('levelchange', updateBatteryStatus);
+          battery.addEventListener('chargingchange', updateBatteryStatus);
+          battery.addEventListener('chargingtimechange', updateBatteryStatus);
+          battery.addEventListener('dischargingtimechange', updateBatteryStatus);
+
+          // Cleanup
+          return () => {
+            battery.removeEventListener('levelchange', updateBatteryStatus);
+            battery.removeEventListener('chargingchange', updateBatteryStatus);
+            battery.removeEventListener('chargingtimechange', updateBatteryStatus);
+            battery.removeEventListener('dischargingtimechange', updateBatteryStatus);
+          };
+        }
+      } catch (error) {
+        console.warn('Battery status not available:', error);
+      }
+    }
+
+    getBatteryStatus();
+  }, []);
+
   const getRequirementStatus = (type: string) => {
     if (!specs) return { meets: false, icon: XCircle, message: 'Unable to detect' };
 
@@ -102,6 +156,123 @@ export function SystemRequirementsChecker() {
       default:
         return { meets: false, icon: XCircle, message: 'Unknown' };
     }
+  };
+
+  // Battery status renderer
+  const renderBatteryStatus = () => {
+    if (!batteryStatus) return null;
+
+    const getBatteryIcon = () => {
+      if (batteryStatus.level <= 20) {
+        return <BatteryWarning className="w-5 h-5 text-red-400" />;
+      }
+      if (batteryStatus.level >= 90) {
+        return <BatteryFull className="w-5 h-5 text-green-400" />;
+      }
+      return <Battery className="w-5 h-5 text-yellow-400" />;
+    };
+
+    const getBatteryColor = () => {
+      if (batteryStatus.level <= 20) return 'text-red-400';
+      if (batteryStatus.level >= 90) return 'text-green-400';
+      return 'text-yellow-400';
+    };
+
+    const formatTime = (seconds: number): string => {
+      if (!isFinite(seconds)) return 'Unknown';
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      return `${hours}h ${minutes}m`;
+    };
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ 
+          scale: 1.02,
+          transition: { type: "spring", stiffness: 400 }
+        }}
+        whileTap={{ scale: 0.98 }}
+        className="relative group cursor-pointer"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 blur-xl opacity-0 group-hover:opacity-70 transition-opacity" />
+        
+        <div className="relative flex items-center gap-4 p-4 bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl hover:border-white/20 transition-all duration-300">
+          <motion.div
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.5 }}
+            className="flex-shrink-0"
+          >
+            {getBatteryIcon()}
+          </motion.div>
+
+          <div className="flex-1">
+            <motion.p 
+              className="text-sm text-[#8b949e]"
+              whileHover={{ color: "#fff" }}
+            >
+              Battery Status
+            </motion.p>
+            <p className="text-white flex items-center gap-2">
+              <motion.span 
+                className={`${getBatteryColor()} font-semibold`}
+                whileHover={{ scale: 1.1 }}
+              >
+                {Math.round(batteryStatus.level)}%
+              </motion.span>
+              {batteryStatus.charging && (
+                <motion.span 
+                  className="text-green-400 text-sm"
+                  animate={{ 
+                    opacity: [1, 0.5, 1],
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 1.5 
+                  }}
+                >
+                  (Charging)
+                </motion.span>
+              )}
+            </p>
+            <p className="text-sm text-[#8b949e]">
+              {batteryStatus.charging
+                ? `Full in: ${formatTime(batteryStatus.chargingTime)}`
+                : `Remaining: ${formatTime(batteryStatus.dischargingTime)}`}
+            </p>
+          </div>
+
+          <motion.div 
+            className="ml-auto"
+            whileHover={{ scale: 1.1 }}
+          >
+            <div className="relative w-12 h-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-lg opacity-50" />
+              <motion.div 
+                className="relative border-2 rounded-md h-full"
+                style={{
+                  borderColor: getBatteryColor().replace('text-', '')
+                }}
+              >
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ 
+                    width: `${batteryStatus.level}%`,
+                  }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className="absolute left-0 top-0 bottom-0"
+                  style={{
+                    backgroundColor: getBatteryColor().replace('text-', ''),
+                    opacity: 0.5
+                  }}
+                />
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+    );
   };
 
   if (loading) {
@@ -140,6 +311,8 @@ export function SystemRequirementsChecker() {
       </div>
 
       <div className="grid gap-4">
+        {batteryStatus && renderBatteryStatus()}
+        
         {Object.entries(getRequirementStatus('cpu')).length > 0 && (
           <div className="flex items-center gap-4 p-4 bg-[#1c2128] rounded-lg">
             <Cpu className="w-5 h-5 text-blue-400" />

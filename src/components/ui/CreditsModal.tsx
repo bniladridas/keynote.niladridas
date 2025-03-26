@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Terminal, Cpu, Globe, ExternalLink } from 'lucide-react';
+import { Box, Terminal, Cpu, Globe, ExternalLink, Code2, Sparkles, Rocket, Zap } from 'lucide-react';
 
 const technologies = [
-  { name: 'React 18.3', description: 'Frontend library', icon: <Box className="w-5 h-5" /> },
-  { name: 'TypeScript 5.5', description: 'Type-safe JavaScript', icon: <Terminal className="w-5 h-5" /> },
-  { name: 'Vite 5.4', description: 'Build tool', icon: <Cpu className="w-5 h-5" /> },
-  { name: 'Tailwind CSS', description: 'Utility-first CSS', icon: <Globe className="w-5 h-5" /> },
+  { name: 'React 18.3', description: 'Frontend library', icon: <Sparkles className="w-5 h-5" /> },
+  { name: 'TypeScript 5.5', description: 'Type-safe JavaScript', icon: <Code2 className="w-5 h-5" /> },
+  { name: 'Vite 5.4', description: 'Build tool', icon: <Zap className="w-5 h-5" /> },
+  { name: 'Tailwind CSS', description: 'Utility-first CSS', icon: <Rocket className="w-5 h-5" /> },
   { name: 'Framer Motion', description: 'Animation library', icon: <Box className="w-5 h-5" /> },
   { name: 'Google Gemini AI', description: 'AI model integration', icon: <Cpu className="w-5 h-5" /> },
   { name: 'React Router 6', description: 'Navigation', icon: <Globe className="w-5 h-5" /> },
@@ -15,10 +15,10 @@ const technologies = [
 ];
 
 const developmentTools = [
-  { name: 'ngrok', description: 'Secure tunneling for local development' },
-  { name: 'ESLint 9', description: 'Code linting' },
-  { name: 'Autoprefixer', description: 'CSS post-processing' },
-  { name: 'Vite Dev Server', description: 'Development server with HMR' },
+  { name: 'ngrok', description: 'Secure tunneling for local development', icon: <Globe className="w-5 h-5" /> },
+  { name: 'ESLint 9', description: 'Code linting', icon: <Code2 className="w-5 h-5" /> },
+  { name: 'Autoprefixer', description: 'CSS post-processing', icon: <Zap className="w-5 h-5" /> },
+  { name: 'Vite Dev Server', description: 'Development server with HMR', icon: <Rocket className="w-5 h-5" /> },
 ];
 
 interface CreditsModalProps {
@@ -34,13 +34,25 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
     >
-      <div className="bg-gray-900 text-white rounded-xl shadow-2xl w-full max-w-2xl p-6 border border-gray-800">
+      <div className="bg-gradient-to-br from-gray-900 to-black text-text-primary rounded-xl shadow-2xl w-full max-w-2xl p-6 border border-purple-500/20">
         <div className="space-y-6">
           <div className="flex justify-between items-start">
-            <h2 className="text-2xl font-bold text-blue-400">Technologies & Credits</h2>
+            <div className="flex items-center gap-3">
+              <div className="relative w-10 h-10 rounded-lg overflow-hidden">
+                <img 
+                  src="https://avatars.githubusercontent.com/u/203538727?s=200&v=4"
+                  alt="Synthara Logo"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 mix-blend-overlay" />
+              </div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                Technologies & Credits
+              </h2>
+            </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-purple-400 hover:text-purple-300 transition-colors"
             >
               ✕
             </button>
@@ -48,16 +60,16 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
 
           {/* Core Technologies */}
           <div>
-            <h3 className="text-lg font-semibold text-blue-400 mb-3">Core Technologies</h3>
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">Core Technologies</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {technologies.map((tech) => (
                 <div
                   key={tech.name}
-                  className="p-4 rounded-lg bg-gray-800/50 border border-gray-700 flex items-start gap-3"
+                  className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex items-start gap-3 hover:border-purple-500/40 transition-colors"
                 >
-                  <div className="text-blue-400">{tech.icon}</div>
+                  <div className="text-purple-400">{tech.icon}</div>
                   <div>
-                    <h4 className="font-semibold">{tech.name}</h4>
+                    <h4 className="font-semibold text-purple-300">{tech.name}</h4>
                     <p className="text-sm text-gray-400">{tech.description}</p>
                   </div>
                 </div>
@@ -67,14 +79,17 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
 
           {/* Development Tools */}
           <div>
-            <h3 className="text-lg font-semibold text-green-400 mb-3">Development Tools</h3>
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">Development Tools</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {developmentTools.map((tool) => (
                 <div
                   key={tool.name}
-                  className="p-4 rounded-lg bg-gray-800/50 border border-gray-700"
+                  className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20 hover:border-purple-500/40 transition-colors"
                 >
-                  <h4 className="font-semibold">{tool.name}</h4>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="text-purple-400">{tool.icon}</div>
+                    <h4 className="font-semibold text-purple-300">{tool.name}</h4>
+                  </div>
                   <p className="text-sm text-gray-400">{tool.description}</p>
                 </div>
               ))}
@@ -83,7 +98,7 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
 
           {/* Deployment */}
           <div>
-            <h3 className="text-lg font-semibold text-yellow-400 mb-3">Deployment</h3>
+            <h3 className="text-lg font-semibold text-text-primary mb-3">Deployment</h3>
             <div className="p-4 rounded-lg bg-gray-800/50 border border-gray-700">
               <p className="text-gray-300">
                 This application is deployed on <span className="text-white font-semibold">Vercel</span>. 
@@ -107,7 +122,7 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
                 href="https://medium.com/@bniladridas"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 group"
+                className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 group"
               >
                 <div className="flex items-center gap-3">
                   <div className="text-purple-400 group-hover:text-purple-300 transition-colors">
@@ -117,14 +132,14 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
                     <h4 className="font-semibold group-hover:text-purple-400 transition-colors">English Network</h4>
                     <p className="text-gray-400 text-sm">My Medium Blog</p>
                   </div>
-                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-purple-400" />
                 </div>
               </a>
               <a 
                 href="https://huggingface.co/cuda-unleashed"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 group"
+                className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 group"
               >
                 <div className="flex items-center gap-3">
                   <div className="text-purple-400 group-hover:text-purple-300 transition-colors">
@@ -134,7 +149,7 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
                     <h4 className="font-semibold group-hover:text-purple-400 transition-colors">Cuda Unleashed</h4>
                     <p className="text-gray-400 text-sm">My HuggingFace Organization</p>
                   </div>
-                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ExternalLink className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-purple-400" />
                 </div>
               </a>
             </div>
@@ -144,7 +159,7 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="mt-8 pt-6 border-t border-gray-800 text-center text-sm text-gray-400"
+            className="mt-8 pt-6 border-t border-purple-500/20 text-center text-sm text-gray-400"
           >
             <p className="flex items-center justify-center gap-2">
               Maranatha Prayer Fellowship. <span className="text-red-400">❤️</span> With love, Niladri Das.

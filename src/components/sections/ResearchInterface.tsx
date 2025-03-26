@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, ArrowLeft, Send, Loader2, Brain, Command, Timer } from 'lucide-react';
+import { Search, ArrowLeft, Send, Loader2, Brain, Command, Timer, Sparkles, BookOpen, Copy, Check } from 'lucide-react';
 import { Button, CopyButton } from '../ui';
 import { useNavigate } from 'react-router-dom';
 import { AIProviderSwitch } from '../AIProviderSwitch';
@@ -8,6 +8,14 @@ import { getAIResponse, getTokenCount, type AIResponse } from '@/lib/ai';
 import ReactMarkdown from 'react-markdown';
 
 const RESEARCH_EXAMPLES = [
+  {
+    title: "Gemini 2.5 Pro",
+    prompt: "Explain the capabilities and improvements in Google's Gemini 2.5 Pro Experimental 03-25 model, including its enhanced context window of 65,536 tokens, improved temperature control (1.0), and advanced reasoning capabilities. How does it compare to previous versions?"
+  },
+  {
+    title: "Gemini 2.0 Flash Image Generation",
+    prompt: "Describe the capabilities of Google's Gemini 2.0 Flash (Image Generation) Experimental model. Include details about its native image generation abilities, response formats, and how it differs from traditional text-to-image models. What are the key features and limitations of this experimental image generation technology?"
+  },
   {
     title: "Neural Network Architecture",
     prompt: "Explain the architecture and working principles of Convolutional Neural Networks (CNNs) in computer vision. Include details about different layers, feature extraction, and practical applications in image recognition."
@@ -39,6 +47,7 @@ export function ResearchInterface() {
     totalTokens: 0
   });
   const [thoughts, setThoughts] = useState<string[]>([]);
+  const [copied, setCopied] = useState(false);
 
   const handleResearch = async () => {
     if (!query.trim() || loading) return;
@@ -103,12 +112,15 @@ export function ResearchInterface() {
   }, [query]);
 
   return (
-    <div className="min-h-screen bg-transparent text-[#c9d1d9]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-[#0f1115] to-black text-white">
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(68,68,68,.2)_50%,transparent_75%,transparent_100%)] bg-[length:20px_20px] animate-[gradient_3s_linear_infinite]" />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <Button
             variant="ghost"
-            className="hover:bg-[#30363d] text-[#c9d1d9] w-full sm:w-auto"
+            className="hover:bg-white/10 text-white backdrop-blur-sm w-full sm:w-auto transition-all duration-300"
             onClick={() => navigate('/')}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -120,19 +132,18 @@ export function ResearchInterface() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-3xl mx-auto"
+          className="max-w-4xl mx-auto"
         >
-          {/* Research form */}
-          <div className="relative">
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="relative backdrop-blur-xl bg-white/5 p-8 rounded-2xl border border-white/10 shadow-2xl">
+            <div className="flex flex-col sm:flex-row gap-6 mb-8">
               <div className="flex-1 relative">
                 <textarea
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Enter your research query..."
-                  className="w-full bg-[#161b22] border border-[#30363d] rounded-lg p-4 min-h-[120px] text-sm sm:text-base pr-24"
+                  placeholder="What would you like to research?"
+                  className="w-full bg-black/30 border border-white/20 rounded-xl p-6 min-h-[150px] text-base sm:text-lg pr-24 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
-                <div className="absolute bottom-3 right-3 flex items-center gap-1 text-xs text-gray-500 bg-[#1c2128] px-2 py-1 rounded border border-[#30363d]">
+                <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-gray-400 bg-black/40 px-3 py-1.5 rounded-lg border border-white/10">
                   <Command className="w-3 h-3" />
                   <span>+</span>
                   <span>↵</span>
@@ -141,151 +152,143 @@ export function ResearchInterface() {
               <Button
                 onClick={handleResearch}
                 disabled={loading || !query.trim()}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-6 w-full sm:w-auto h-auto sm:h-auto py-4"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl flex items-center gap-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/20"
               >
-                <Send className="h-5 w-5 mr-2" />
-                <span>Send</span>
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Researching...
+                  </>
+                ) : (
+                  <>
+                    <BookOpen className="w-5 h-5" />
+                    Research
+                  </>
+                )}
               </Button>
             </div>
-          </div>
 
-          {/* Generation Status */}
-          {isGenerating && (
-            <>
+            {/* Generation Status */}
+            {isGenerating && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mb-4 p-4 bg-[#161b22] border border-[#30363d] rounded-lg"
+                className="mb-6 p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl"
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin text-[#58a6ff]" />
-                    <span className="text-sm">Generating response...</span>
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="h-5 w-5 animate-spin text-purple-400" />
+                    <span className="text-white">Processing research query...</span>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-[#8b949e]">
-                    <div className="flex items-center gap-2">
-                      <span>Prompt: {generationProgress.promptTokens}</span>
-                      <span>Response: {generationProgress.completionTokens}</span>
-                      <Timer className="h-4 w-4 text-[#58a6ff]" />
-                      <span className="font-medium text-[#58a6ff]">
-                        {generationProgress.totalTokens} tokens
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-3 text-sm text-gray-400">
+                    <Timer className="h-4 w-4" />
+                    <span>{generationProgress.totalTokens} tokens processed</span>
                   </div>
                 </div>
-                <div className="mt-2 h-1 bg-[#30363d] rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-[#58a6ff] rounded-full transition-all duration-300"
-                    style={{ 
-                      width: `${Math.min((generationProgress.totalTokens / 8192) * 100, 100)}%` 
-                    }}
-                  />
-                </div>
-              </motion.div>
 
-              {/* Thinking Process */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mb-4 p-4 bg-[#161b22] border border-[#30363d] rounded-lg"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <Brain className="h-4 w-4 text-[#58a6ff]" />
-                  <span className="text-sm font-medium">Thinking Process</span>
-                </div>
-                <div className="space-y-2">
+                {/* Thinking Process */}
+                <div className="mt-4 space-y-2">
                   {thoughts.map((thought, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.2 }}
-                      className="flex items-center gap-2 text-sm text-[#8b949e]"
+                      className="flex items-center gap-3 text-sm text-gray-400"
                     >
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#58a6ff]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
                       <span>{thought}</span>
                     </motion.div>
                   ))}
                 </div>
               </motion.div>
-            </>
-          )}
+            )}
 
-          {/* Empty State Message with Examples */}
-          {!query.trim() && !response && !error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center p-8 bg-[#161b22] border border-[#30363d] rounded-lg"
-            >
-              <Brain className="w-12 h-12 mx-auto mb-4 text-blue-500" />
-              <h3 className="text-xl font-bold mb-2">Your AI Research Assistant</h3>
-              <p className="text-[#8b949e] mb-6">
-                "I've done my PhD in everything and nothing simultaneously. 
-                Quantum superposition of knowledge, you know? 🤓"
-              </p>
-              
-              <div className="space-y-4 mt-8">
-                <p className="text-sm text-[#8b949e] font-medium">Research Topic Examples:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {RESEARCH_EXAMPLES.map((example, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleExampleClick(example.prompt)}
-                      className="cursor-pointer p-4 bg-[#1c2128] border border-[#30363d] rounded-lg hover:bg-[#2d333b] transition-colors text-left"
-                    >
-                      <h4 className="text-sm font-medium text-blue-400 mb-2">{example.title}</h4>
-                      <p className="text-xs text-[#8b949e] line-clamp-3">{example.prompt}</p>
-                      <button className="mt-2 text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
-                        Research this topic
-                        <Search className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <p className="text-sm text-[#8b949e] mt-6">
-                Ask me anything about machine learning, and I'll give you a 
-                comprehensive analysis faster than you can say "neural network"!
-              </p>
-            </motion.div>
-          )}
-
-          {/* Error Message */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-8 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-500"
-            >
-              {error}
-            </motion.div>
-          )}
-
-          {/* Research Results with Token Count */}
-          {response && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-8"
-            >
-              <div className="flex items-center justify-between mb-2 px-2">
-                <span className="text-sm text-[#8b949e]">Response Generated</span>
-                <div className="flex items-center gap-4">
-                  <div className="text-sm text-[#8b949e]">
-                    <span>Prompt: {response.promptTokens} tokens</span>
-                    <span className="mx-2">Response: {response.completionTokens} tokens</span>
-                    <span className="font-bold">Total: {response.totalTokens} tokens</span>
+            {/* Empty State */}
+            {!query.trim() && !response && !error && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center p-8 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl"
+              >
+                <div className="relative">
+                  <div className="absolute inset-0 bg-purple-500/20 blur-3xl rounded-full" />
+                  <div className="relative w-16 h-16 mx-auto mb-6 rounded-xl overflow-hidden">
+                    <img 
+                      src="https://avatars.githubusercontent.com/u/203538727?s=200&v=4"
+                      alt="Synthara Logo"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 mix-blend-overlay" />
                   </div>
-                  <CopyButton content={response.text} />
                 </div>
-              </div>
-              <div className="markdown-content bg-[#161b22] border border-[#30363d] rounded-lg p-6">
-                <ReactMarkdown>{response.text}</ReactMarkdown>
-              </div>
-            </motion.div>
-          )}
+                <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  AI Research Assistant
+                </h3>
+                <p className="text-gray-300 mb-8 text-lg">
+                  "I've done my PhD in everything and nothing simultaneously. 
+                  Quantum superposition of knowledge, you know? 🤓"
+                </p>
+
+                <div className="space-y-6">
+                  <p className="text-sm text-gray-400 font-medium">Research Topic Examples:</p>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {RESEARCH_EXAMPLES.map((example, index) => (
+                      <div
+                        key={index}
+                        onClick={() => handleExampleClick(example.prompt)}
+                        className="cursor-pointer p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 text-left group"
+                      >
+                        <h4 className="text-lg font-medium text-white mb-2">{example.title}</h4>
+                        <p className="text-sm text-gray-400 line-clamp-3">{example.prompt}</p>
+                        <button className="mt-4 text-sm text-purple-400 group-hover:text-purple-300 flex items-center gap-2">
+                          Research this topic
+                          <Search className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 mb-8 backdrop-blur-sm"
+              >
+                {error}
+              </motion.div>
+            )}
+
+            {/* Research Results */}
+            {response && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-8"
+              >
+                <div className="flex items-center justify-between mb-4 px-2">
+                  <span className="text-sm text-purple-400">Research Results</span>
+                  <div className="flex items-center gap-4">
+                    <div className="text-sm text-gray-400">
+                      <span>Prompt: {response.promptTokens} tokens</span>
+                      <span className="mx-2">•</span>
+                      <span>Response: {response.completionTokens} tokens</span>
+                      <span className="mx-2">•</span>
+                      <span className="text-purple-400">Total: {response.totalTokens} tokens</span>
+                    </div>
+                    <CopyButton content={response.text} />
+                  </div>
+                </div>
+                <div className="prose prose-invert max-w-none bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl p-8">
+                  <ReactMarkdown>{response.text}</ReactMarkdown>
+                </div>
+              </motion.div>
+            )}
+          </div>
         </motion.div>
       </div>
     </div>
