@@ -267,6 +267,12 @@ export function Hero() {
       icon: Image, 
       color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
       action: () => window.open('https://synthara-calculus-image-generator.vercel.app/', '_blank')
+    },
+    { 
+      label: 'AI Chat', 
+      icon: MessageSquare, 
+      color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
+      action: () => window.open('https://synthara-ai-chat.vercel.app', '_blank')
     }
   ];
 
