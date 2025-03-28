@@ -273,6 +273,12 @@ export function Hero() {
       icon: MessageSquare, 
       color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
       action: () => window.open('https://synthara-ai-chat.vercel.app', '_blank')
+    },
+    { 
+      label: 'Commit Synthara', 
+      icon: Code2, 
+      color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
+      action: () => window.open('https://commit-synthara.vercel.app', '_blank')
     }
   ];
 
