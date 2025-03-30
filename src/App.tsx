@@ -89,6 +89,9 @@ const MainContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#1c2128] text-primary tracking-wide leading-relaxed relative flex flex-col">
+      {/* Cookie Consent must be mounted at all times */}
+      <CookieConsent />
+      
       {/* Welcome bar */}
       {formSubmitted && userData && (
         <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 text-white py-0.5 px-4 z-50 backdrop-blur-xl border-b border-white/5">

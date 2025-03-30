@@ -8,7 +8,19 @@ export const SimpleBlurForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    console.log(`Submitted: ${name}, ${age}`);
+    
+    // Save to localStorage
+    const userData = { name, age };
+    localStorage.setItem('userData', JSON.stringify(userData));
+    
+    // Dispatch event to trigger cookie consent with debug
+    console.log('Dispatching userDataUpdated event');
+    window.dispatchEvent(new CustomEvent('userDataUpdated'));
+    
+    // Clear any existing cookie consent to ensure it shows
+    localStorage.removeItem('cookieConsent');
+    
+    console.log('Form submitted:', userData);
   };
 
   return (

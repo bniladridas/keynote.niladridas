@@ -18,5 +18,17 @@
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/api/cookie-preferences/:path*",
+      "destination": "/api/cookie-preferences/:path*"
+    }
+  ],
+  "functions": {
+    "api/cookie-preferences/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
 }
