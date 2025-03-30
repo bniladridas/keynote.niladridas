@@ -5,7 +5,7 @@ import {
   ChevronRight, Search, Cpu, Github, Twitter, 
   Linkedin, Mail, BookOpen, Ship, Cloud, Code2, 
   Image, Copyright, X, Brain, MessageSquare, Server,
-  Users
+  Users, FileText
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { CreditsModal } from '../ui/CreditsModal';
@@ -22,21 +22,6 @@ const CompanySection = () => {
     { name: 'Python', color: 'yellow' },
     { name: 'TensorFlow', color: 'red' },
     { name: 'PyTorch', color: 'indigo' }
-  ];
-
-  const benefits = [
-    'Competitive salary',
-    'Equity options',
-    'Flexible hours',
-    'Remote work',
-    'Professional development'
-  ];
-
-  const workCulture = [
-    'Remote-first',
-    'Global team',
-    'Flexible schedule',
-    'Innovation-driven'
   ];
 
   const socialLinks = [
@@ -59,81 +44,94 @@ const CompanySection = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.4 }}
-      className="max-w-4xl mx-auto px-4 py-8 bg-black/40 backdrop-blur-xl rounded-2xl border border-white/10"
+      className="relative max-w-4xl mx-auto px-4 py-8"
     >
-      {/* Company Overview */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">About Synthara</h2>
-        <p className="text-gray-400">
-          We are a cutting-edge ML Learning Platform focused on building innovative AI/ML solutions
-          and creating interactive learning experiences.
-        </p>
-      </div>
-
-      {/* Tech Stack */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-white text-center mb-4">Our Tech Stack</h3>
-        <div className="flex flex-wrap justify-center gap-3">
-          {techStack.map(({ name, color }) => (
-            <span 
-              key={name}
-              className={`px-3 py-1 bg-${color}-500/20 rounded-full text-sm text-${color}-300`}
-            >
-              {name}
-            </span>
-          ))}
+      {/* Animated background effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-3xl" />
+      <div className="absolute inset-0 backdrop-blur-xl bg-black/40 rounded-3xl border border-white/10" />
+      
+      {/* Decorative elements */}
+      <div className="absolute -top-10 -right-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+      
+      {/* Content container */}
+      <div className="relative z-10 p-6">
+        {/* Company Overview with enhanced title */}
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block"
+          >
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-6">
+              About Synthara
+            </h2>
+          </motion.div>
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-gray-300 text-lg leading-relaxed"
+          >
+            We are a cutting-edge ML Learning Platform focused on building innovative AI/ML solutions
+            and creating interactive learning experiences.
+          </motion.p>
         </div>
-      </div>
 
-      {/* Benefits */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-white text-center mb-4">Benefits</h3>
-        <div className="flex flex-wrap justify-center gap-3">
-          {benefits.map((benefit) => (
-            <span 
-              key={benefit}
-              className="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300"
+        {/* Tech Stack Grid with hover effects */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12"
+        >
+          {techStack.map((tech, index) => (
+            <motion.div
+              key={tech.name}
+              whileHover={{ scale: 1.05, rotate: 2 }}
+              className={`
+                relative p-4 rounded-xl backdrop-blur-sm
+                bg-gradient-to-br from-${tech.color}-500/10 to-${tech.color}-500/5
+                border border-${tech.color}-500/20 hover:border-${tech.color}-500/40
+                transition-all duration-300 group
+              `}
             >
-              {benefit}
-            </span>
+              <div className={`absolute inset-0 bg-${tech.color}-500/5 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity`} />
+              <p className={`relative text-${tech.color}-400 font-medium text-center`}>
+                {tech.name}
+              </p>
+            </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Work Culture */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-white text-center mb-4">Work Culture</h3>
-        <div className="flex flex-wrap justify-center gap-3">
-          {workCulture.map((culture) => (
-            <span 
-              key={culture}
-              className="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300"
-            >
-              {culture}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Social Links */}
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-white mb-4">Connect With Us</h3>
-        <div className="flex justify-center gap-6">
-          {socialLinks.map(({ name, icon: Icon, url, color }) => (
+        {/* Social Links with floating animation */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="flex justify-center gap-6"
+        >
+          {socialLinks.map((social, index) => (
             <motion.a
-              key={name}
-              href={url}
+              key={social.name}
+              href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${color} hover:underline flex items-center gap-2`}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ y: -5, scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
+              className={`
+                p-3 rounded-xl backdrop-blur-sm
+                bg-gradient-to-br from-white/10 to-white/5
+                border border-white/10 hover:border-white/20
+                ${social.color} transition-all duration-300
+                hover:shadow-lg hover:shadow-purple-500/10
+              `}
             >
-              <Icon className="w-5 h-5" />
-              <span>{name}</span>
+              <social.icon className="w-6 h-6" />
             </motion.a>
           ))}
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -357,6 +355,12 @@ export function Hero() {
       action: () => navigate('/generate')
     },
     { 
+      label: 'Document Analysis', 
+      icon: FileText, 
+      color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
+      action: () => navigate('/document-analysis')
+    },
+    { 
       label: 'Microservices', 
       icon: Server, 
       color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
@@ -512,19 +516,120 @@ export function Hero() {
           <div className="flex items-center gap-3">
             <motion.button
               onClick={announcement.action}
-              className={`bg-gradient-to-r ${announcement.buttonGradient} text-white px-5 py-2 rounded-xl flex items-center gap-2 shadow-lg shadow-${announcement.gradientFrom}`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="relative group"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0.9 }}
               animate={{ opacity: 1 }}
             >
-              <announcement.buttonIcon className="w-4 h-4" />
-              {announcement.buttonText}
+              {/* Multiple geometric instances */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
+                {/* Instance 1 - Rotating hexagons */}
+                {[...Array(3)].map((_, i) => (
+                  <div 
+                    key={`hex-${i}`} 
+                    className="absolute inset-0" 
+                    style={{
+                      transform: `rotate(${i * 30}deg) scale(${1.2 - i * 0.05})`,
+                      animation: `spin-${i} ${8 + i * 2}s linear infinite`
+                    }}
+                  >
+                    <div className={`
+                      w-full h-full 
+                      bg-gradient-to-r from-purple-600/20 to-blue-600/20 
+                      clip-hexagon
+                    `} />
+                  </div>
+                ))}
+
+                {/* Instance 2 - Floating triangles */}
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={`tri-${i}`}
+                    className="absolute w-4 h-4 clip-triangle"
+                    style={{
+                      top: `${20 + i * 10}%`,
+                      left: `${10 + i * 15}%`,
+                      animation: `float-${i} ${3 + i}s ease-in-out infinite`,
+                      opacity: 0.2,
+                      background: i % 2 ? 'linear-gradient(to right, #9333ea, #2563eb)' : 'linear-gradient(to right, #2563eb, #9333ea)'
+                    }}
+                  />
+                ))}
+
+                {/* Instance 3 - Orbiting dots */}
+                <div className="absolute inset-0">
+                  {[...Array(8)].map((_, i) => (
+                    <div
+                      key={`dot-${i}`}
+                      className="absolute w-1.5 h-1.5 rounded-full bg-white/30"
+                      style={{
+                        transform: `rotate(${i * 45}deg) translateX(${100}%)`,
+                        animation: `orbit ${5 + i * 0.5}s linear infinite`
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Main button content */}
+              <div className="
+                relative px-6 py-3
+                backdrop-blur-xl
+                overflow-hidden
+                clip-hexagon
+                border border-white/10
+                bg-black/30
+                group-hover:bg-black/40
+                transition-colors duration-300
+              ">
+                {/* Animated gradient lines */}
+                <div className="absolute inset-0 opacity-30">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={`line-${i}`}
+                      className="absolute w-full h-[1px]"
+                      style={{
+                        top: `${30 + i * 20}%`,
+                        background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent)',
+                        transform: `translateX(-100%) rotate(${-15 + i * 15}deg)`,
+                        animation: `slide-right ${3 + i}s linear infinite`
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Instance 4 - Particle system */}
+                <div className="absolute inset-0 opacity-30">
+                  {[...Array(20)].map((_, i) => (
+                    <div
+                      key={`particle-${i}`}
+                      className="absolute w-1 h-1 rounded-full bg-white/20"
+                      style={{
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        animation: `particle-fade ${2 + Math.random() * 3}s linear infinite`
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Button content */}
+                <div className="relative flex items-center gap-3 z-10">
+                  <announcement.buttonIcon className="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors duration-300" />
+                  <span className="font-medium bg-gradient-to-r from-white via-purple-100 to-blue-100 bg-clip-text text-transparent">
+                    {announcement.buttonText}
+                  </span>
+                </div>
+              </div>
+
+              {/* Outer glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/0 via-blue-600/20 to-purple-600/0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 clip-hexagon" />
             </motion.button>
-            
+
             <motion.button
               onClick={() => setShowBanner(false)}
-              className="text-gray-400 hover:text-gray-300 p-2 rounded-full"
+              className="text-gray-400 hover:text-gray-300 p-2 rounded-full relative z-10"
               whileHover={{ 
                 scale: 1.1,
                 rotate: 90 
@@ -617,7 +722,7 @@ export function Hero() {
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                   Niladri Das
                 </h2>
-                <p className="text-lg text-gray-300">ML Engineer & Developer</p>
+                <p className="text-lg text-gray-300">Cloud Environment Automation @Brev.dev</p>
                 <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
                   <span className="flex items-center gap-2">
                     <Cpu className="w-4 h-4 text-purple-400" />
@@ -661,13 +766,6 @@ export function Hero() {
                 <button.icon className="w-5 h-5" />
               </Button>
             ))}
-            <Button
-              onClick={handleOpenCredits}
-              className="bg-white/5 hover:bg-white/10 backdrop-blur-sm p-6 rounded-xl flex items-center justify-center gap-3"
-            >
-              <span className="text-lg">Credits</span>
-              <Code2 className="w-5 h-5" />
-            </Button>
           </motion.div>
         </motion.div>
 
