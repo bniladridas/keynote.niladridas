@@ -219,26 +219,35 @@ const MainContent: React.FC = () => {
 
               {/* Footer */}
               <div className="mt-6 pt-6 border-t border-border">
-                <p className="text-center text-sm text-text-secondary">
-                  By continuing, you agree to our{' '}
-                  <a 
-                    href="/terms" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:text-primary/80 underline cursor-pointer"
-                  >
-                    Terms of Service
-                  </a>
-                  {' '}and{' '}
-                  <a 
-                    href="/privacy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:text-primary/80 underline cursor-pointer"
-                  >
-                    Privacy Policy
-                  </a>
-                </p>
+                <div className="space-y-4">
+                  <div className="bg-white/5 p-4 rounded-lg border border-white/10">
+                    <p className="text-amber-400 text-sm font-medium mb-2">Note:</p>
+                    <p className="text-gray-300 text-sm">
+                      To view our Terms of Service and Privacy Policy in detail, please complete your credentials first. 
+                      Then you can press these links to see them activated in our cloud-based documentation system!
+                    </p>
+                  </div>
+                  <p className="text-center text-sm text-text-secondary">
+                    By continuing, you agree to our{' '}
+                    <a 
+                      href="/terms" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 underline cursor-pointer"
+                    >
+                      Terms of Service
+                    </a>
+                    {' '}and{' '}
+                    <a 
+                      href="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 underline cursor-pointer"
+                    >
+                      Privacy Policy
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
