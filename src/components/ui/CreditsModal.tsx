@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Terminal, Cpu, Globe, ExternalLink, Code2, Sparkles, Rocket, Zap } from 'lucide-react';
+import { Box, Terminal, Cpu, Globe, ExternalLink, Code2, Sparkles, Rocket, Zap, Server, Brain, Image, Atom } from 'lucide-react';
 
 const technologies = [
   { name: 'React 18.3', description: 'Frontend library', icon: <Sparkles className="w-5 h-5" /> },
@@ -9,9 +9,24 @@ const technologies = [
   { name: 'Tailwind CSS', description: 'Utility-first CSS', icon: <Rocket className="w-5 h-5" /> },
   { name: 'Framer Motion', description: 'Animation library', icon: <Box className="w-5 h-5" /> },
   { name: 'Google Gemini AI', description: 'AI model integration', icon: <Cpu className="w-5 h-5" /> },
+  { name: 'NVIDIA AI', description: 'Microservices & Model Hosting', icon: <Server className="w-5 h-5" /> },
   { name: 'React Router 6', description: 'Navigation', icon: <Globe className="w-5 h-5" /> },
   { name: 'Lucide React', description: 'Icon system', icon: <Box className="w-5 h-5" /> },
   { name: 'React Markdown', description: 'Markdown rendering', icon: <Terminal className="w-5 h-5" /> },
+];
+
+const aiModels = [
+  { name: 'Llama 3.3 Nemotron Super', description: '49B parameter model', icon: <Brain className="w-5 h-5" /> },
+  { name: 'DeepSeek R1', description: 'Advanced reasoning model', icon: <Brain className="w-5 h-5" /> },
+  { name: 'Gemma 3', description: '27B instruction-tuned model', icon: <Brain className="w-5 h-5" /> },
+  { name: 'Phi-4 Multimodal', description: 'Vision-language model', icon: <Image className="w-5 h-5" /> },
+];
+
+const microservices = [
+  { name: 'AlphaFold2', description: 'Protein structure prediction', icon: <Cpu className="w-5 h-5" /> },
+  { name: 'ESM2-650M', description: 'Protein language model', icon: <Brain className="w-5 h-5" /> },
+  { name: 'GenMol Generate', description: 'Molecular design', icon: <Atom className="w-5 h-5" /> },
+  { name: 'DALL-E 3', description: 'Image generation', icon: <Image className="w-5 h-5" /> },
 ];
 
 const developmentTools = [
@@ -71,6 +86,44 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
                   <div>
                     <h4 className="font-semibold text-purple-300">{tech.name}</h4>
                     <p className="text-sm text-gray-400">{tech.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Models & Microservices */}
+          <div>
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">AI Models & Microservices</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {aiModels.map((model) => (
+                <div
+                  key={model.name}
+                  className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex items-start gap-3 hover:border-purple-500/40 transition-colors"
+                >
+                  <div className="text-purple-400">{model.icon}</div>
+                  <div>
+                    <h4 className="font-semibold text-purple-300">{model.name}</h4>
+                    <p className="text-sm text-gray-400">{model.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* NVIDIA Microservices */}
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">NVIDIA Microservices</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {microservices.map((service) => (
+                <div
+                  key={service.name}
+                  className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex items-start gap-3 hover:border-purple-500/40 transition-colors"
+                >
+                  <div className="text-purple-400">{service.icon}</div>
+                  <div>
+                    <h4 className="font-semibold text-purple-300">{service.name}</h4>
+                    <p className="text-sm text-gray-400">{service.description}</p>
                   </div>
                 </div>
               ))}
