@@ -4,8 +4,8 @@ export function OGPreview() {
   const isDevelopment = import.meta.env.DEV;
   
   const domains = {
-    primary: 'https://keynote-niladridas-ecru.vercel.app',
-    secondary: 'https://keynote-niladridas-ecru.vercel.app'
+    primary: 'https://keynote-niladridas.vercel.app',
+    secondary: 'https://keynote-niladridas.vercel.app'
   };
   
   const meta = {

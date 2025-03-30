@@ -553,22 +553,47 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Generated Image */}
+        {/* Generated Image Container with Enhanced Visual Effects */}
         {generatedImage && (
           <motion.div
+            // Fade-in animation with slight scale effect
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="mt-12 max-w-2xl mx-auto"
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 blur-2xl opacity-20" />
+              {/* Background gradient effect for depth */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-purple-600/30 blur-3xl opacity-30" 
+                // Creates a soft, blurred background glow
+              />
+              
               <img
                 src={generatedImage}
                 alt="AI Generated Art"
-                className="relative rounded-2xl border border-white/10 shadow-2xl"
+                className="
+                  relative                    /* Positions above the gradient background */
+                  rounded-3xl                 /* Rounded corners for modern look */
+                  border border-white/20      /* Subtle border with 20% opacity */
+                  shadow-2xl                  /* Deep shadow for depth */
+                  transform                   /* Enables CSS transforms */
+                  hover:scale-[1.02]         /* Slight scale up on hover */
+                  transition-transform        /* Smooth transition for hover effect */
+                  duration-300               /* 300ms animation duration */
+                "
               />
             </div>
-            <p className="text-center text-sm text-gray-400 mt-4">AI Generated Artwork</p>
+            
+            {/* Caption with modern styling */}
+            <p className="
+              text-center 
+              text-sm 
+              text-blue-300/70              /* Light blue text with 70% opacity */
+              mt-4 
+              font-light                    /* Thin font weight for modern look */
+            ">
+              AI Generated Visualization
+            </p>
           </motion.div>
         )}
 

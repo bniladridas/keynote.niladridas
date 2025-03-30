@@ -113,9 +113,19 @@ class ImageGenerationService {
   }
 
   public async generateHeroImage(): Promise<string> {
-    const prompt = `Create a modern, artistic representation of machine learning and artificial intelligence. 
-      Use a dark theme with glowing elements, neural network patterns, and abstract data visualizations. 
-      Style should match a professional learning platform with blue and purple color scheme.`;
+    // Enhanced AI prompt for generating modern tech-themed images
+    // Each line carefully crafted to create specific visual elements
+    const prompt = `Create a hyper-modern, minimalist representation of AI and machine learning. 
+      Use a sophisticated dark theme with:
+      // Color scheme: Electric blue and deep purple for a futuristic look
+      - Subtle neon accents in electric blue and deep purple
+      // Dynamic elements: Adding movement and depth
+      - Floating geometric particles
+      // Neural network visualization: Core AI representation
+      - Abstract neural pathways with gradient illumination
+      // Modern design principles: Keeping it clean and professional
+      - Clean, sharp edges and modern design elements
+      Style should convey cutting-edge technology with a professional aesthetic.`;
     
     return this.generateImage(prompt);
   }
