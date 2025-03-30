@@ -14,12 +14,34 @@ export function Navbar() {
 
         {/* Center section */}
         <div className="hidden md:flex items-center gap-4">
-          {/* Add your navigation links here */}
+          <Link 
+            to="/learn" 
+            className="text-white/70 hover:text-white transition-colors"
+          >
+            Learn
+          </Link>
+          <Link 
+            to="/research" 
+            className="text-white/70 hover:text-white transition-colors"
+          >
+            Research
+          </Link>
         </div>
 
         {/* Right side */}
         <div className="flex items-center gap-4">
-          {/* Other navbar items can go here */}
+          <Link 
+            to="/terms" 
+            className="text-white/50 hover:text-white text-sm transition-colors"
+          >
+            Terms
+          </Link>
+          <Link 
+            to="/privacy" 
+            className="text-white/50 hover:text-white text-sm transition-colors"
+          >
+            Privacy
+          </Link>
         </div>
       </div>
     </nav>

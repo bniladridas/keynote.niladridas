@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Hero } from './components/sections/Hero';
 import { LearningInterface } from './components/sections/LearningInterface';
 import { ResearchInterface } from './components/sections/ResearchInterface';
@@ -10,6 +10,12 @@ import { ImageGenerationInterface } from './components/sections/ImageGenerationI
 import { FloatingBugReport } from './components/FloatingBugReport';
 import { BlurBackground } from './components/BlurBackground';
 import { SimpleBlurForm } from './components/SimpleBlurForm';
+import { MicroservicesInterface } from './components/sections/MicroservicesInterface';
+import { TermsOfService } from './components/legal/TermsOfService';
+import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
+import { CookiePolicy } from './components/legal/CookiePolicy';
+import { CookieConsent } from './components/CookieConsent';
+import { Footer } from './components/Footer';
 
 // Define a type for user data
 interface UserData {
@@ -17,239 +23,297 @@ interface UserData {
   age: number;
 }
 
-function App() {
-  // State to track if user has submitted the form
+// Separate component for the main app content with form
+const MainContent: React.FC = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
-  // State to store user data
   const [userData, setUserData] = useState<UserData | null>(null);
-  // State to track if the initial check has been performed
   const [initialCheckDone, setInitialCheckDone] = useState(false);
-  
-  // Check localStorage on mount to see if user has already submitted the form
+  const location = useLocation();
+
+  // Add this function to handle form submission
+  const handleFormSubmit = (newUserData: UserData) => {
+    setUserData(newUserData);
+    setFormSubmitted(true);
+    // Trigger a custom event to notify App component
+    window.dispatchEvent(new CustomEvent('userDataUpdated'));
+  };
+
+  // Check if we're on a legal page
+  const isLegalPage = location.pathname === '/terms' || location.pathname === '/privacy';
+
+  // Your existing useEffect for localStorage
   useEffect(() => {
     try {
-      // Try to get user data from localStorage
       const storedUserData = localStorage.getItem('userData');
-      
       if (storedUserData) {
-        // Parse the stored data
         const parsedUserData = JSON.parse(storedUserData) as UserData;
-        
-        // Validate the data
         if (parsedUserData && parsedUserData.name && parsedUserData.age) {
           setUserData(parsedUserData);
           setFormSubmitted(true);
-          console.log('User data loaded from localStorage:', parsedUserData);
         }
       }
     } catch (error) {
       console.error('Error loading user data from localStorage:', error);
-      // Clear potentially corrupted data
       localStorage.removeItem('userData');
     } finally {
-      // Mark the initial check as done
       setInitialCheckDone(true);
     }
   }, []);
 
-  // Handle form submission
+  // Your existing handleSubmit function
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+    const formData = new FormData(e.currentTarget);
+    const newUserData = {
+      name: formData.get('name') as string,
+      age: parseInt(formData.get('age') as string),
+    };
+
     try {
-      const form = e.currentTarget;
-      const nameInput = form.elements.namedItem('name') as HTMLInputElement;
-      const ageInput = form.elements.namedItem('age') as HTMLSelectElement;
-      
-      if (nameInput && ageInput) {
-        const name = nameInput.value.trim();
-        const age = parseInt(ageInput.value);
-        
-        // Validate input
-        if (!name) {
-          alert('Please enter your name');
-          return;
-        }
-        
-        if (isNaN(age) || age < 18) {
-          alert('Please select a valid age');
-          return;
-        }
-        
-        // Create user data object
-        const newUserData: UserData = { name, age };
-        
-        // Store user info as a single JSON object
-        localStorage.setItem('userData', JSON.stringify(newUserData));
-        
-        // Update state
-        setUserData(newUserData);
-        setFormSubmitted(true);
-        
-        console.log('User data saved:', newUserData);
-      }
+      localStorage.setItem('userData', JSON.stringify(newUserData));
+      handleFormSubmit(newUserData); // Use the new function here
     } catch (error) {
       console.error('Error saving user data:', error);
       alert('There was an error saving your information. Please try again.');
     }
   };
 
-  // Reset user data and form
-  const resetForm = () => {
-    try {
-      localStorage.removeItem('userData');
-      setUserData(null);
-      setFormSubmitted(false);
-      console.log('User data reset');
-    } catch (error) {
-      console.error('Error resetting user data:', error);
-    }
-  };
-
-  // If the initial check hasn't been done yet, show a loading state
-  if (!initialCheckDone) {
+  if (isLegalPage) {
     return (
-      <div className="min-h-screen bg-[#1c2128] flex items-center justify-center">
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-md"></div>
-        <div className="relative z-50 text-white text-xl">Loading...</div>
-      </div>
+      <Routes>
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+      </Routes>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#1c2128] text-primary tracking-wide leading-relaxed relative">
-      {/* Blur overlay - only shown if form not submitted */}
-      {!formSubmitted && (
-        <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-md z-30"
-        ></div>
+    <div className="min-h-screen bg-[#1c2128] text-primary tracking-wide leading-relaxed relative flex flex-col">
+      {/* Welcome bar */}
+      {formSubmitted && userData && (
+        <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 text-white py-0.5 px-4 z-50 backdrop-blur-xl border-b border-white/5">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-white/50">Welcome,</span>
+              <span className="font-medium">{userData.name}</span>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.removeItem('userData');
+                setUserData(null);
+                setFormSubmitted(false);
+              }}
+              className="text-white/50 hover:text-white flex items-center gap-1 px-1.5 py-0.5 rounded-md hover:bg-white/10 transition-colors text-xs"
+            >
+              <span>Sign Out</span>
+              <svg 
+                className="w-3 h-3" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
       )}
 
-      {/* User form - only shown if form not submitted */}
+      {/* Blur overlay */}
       {!formSubmitted && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        >
-          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-8 shadow-2xl border border-blue-500/30 w-full max-w-md mx-auto overflow-hidden">
-            {/* Company logo/branding */}
-            <div className="flex justify-center mb-6">
-              <div className="bg-blue-500 text-white font-bold text-xl px-4 py-2 rounded-lg shadow-lg">
-                ML Learning Platform
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md z-30"></div>
+      )}
+
+      {/* User onboarding form */}
+      {!formSubmitted && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-surface rounded-2xl border border-border shadow-2xl overflow-hidden">
+            {/* Header Section */}
+            <div className="relative h-32 bg-gradient-radial from-primary/20 via-background to-background">
+              <div className="absolute inset-0 bg-noise opacity-20"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <h2 className="text-3xl font-bold text-text-primary">Welcome</h2>
+                <p className="text-text-secondary mt-1">Let's get you started</p>
               </div>
             </div>
-            
-            <h3 className="text-2xl font-bold mb-6 text-white text-center">
-              Welcome to Our Platform
-            </h3>
-            
-            <p className="text-gray-300 mb-6 text-center">
-              Please provide your information to get started with our advanced learning tools.
-            </p>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-gray-300 text-sm font-medium mb-2">Your Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    className="pl-10 w-full px-4 py-3 bg-gray-700/50 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your full name"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label htmlFor="age" className="block text-gray-300 text-sm font-medium mb-2">Your Age</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <select
-                    id="age"
-                    name="age"
-                    className="pl-10 w-full px-4 py-3 bg-gray-700/50 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none transition-all duration-200"
-                    required
-                    defaultValue=""
+
+            {/* Form Section */}
+            <div className="p-6 pt-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Name Input */}
+                <div className="space-y-2">
+                  <label 
+                    htmlFor="name" 
+                    className="block text-sm font-medium text-text-secondary"
                   >
-                    <option value="" disabled>Select your age</option>
-                    {Array.from({ length: 83 }, (_, i) => i + 18).map(value => (
-                      <option key={value} value={value}>{value}</option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
+                    Your Name
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      placeholder="Enter your full name"
+                      className="w-full px-4 h-11 bg-surface border border-border rounded-lg
+                               text-text-primary placeholder:text-text-secondary/50
+                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30
+                               transition-all duration-200"
+                      required
+                    />
                   </div>
                 </div>
+
+                {/* Age Selection */}
+                <div className="space-y-2">
+                  <label 
+                    htmlFor="age" 
+                    className="block text-sm font-medium text-text-secondary"
+                  >
+                    Your Age
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="age"
+                      name="age"
+                      className="w-full px-4 h-11 bg-surface border border-border rounded-lg
+                               text-text-primary 
+                               focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30
+                               transition-all duration-200 appearance-none"
+                      required
+                    >
+                      <option value="" disabled selected>Select your age</option>
+                      {Array.from({ length: 83 }, (_, i) => i + 18).map(value => (
+                        <option key={value} value={value}>{value} years</option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-secondary">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-2">
+                  <button 
+                    type="submit"
+                    className="w-full h-11 bg-primary hover:bg-primary/90 text-surface
+                             rounded-lg font-medium transition-all duration-200
+                             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2
+                             focus:ring-offset-surface
+                             flex items-center justify-center gap-2"
+                  >
+                    <span>Continue to Platform</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </form>
+
+              {/* Footer */}
+              <div className="mt-6 pt-6 border-t border-border">
+                <p className="text-center text-sm text-text-secondary">
+                  By continuing, you agree to our{' '}
+                  <a 
+                    href="/terms" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:text-primary/80 underline cursor-pointer"
+                  >
+                    Terms of Service
+                  </a>
+                  {' '}and{' '}
+                  <a 
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:text-primary/80 underline cursor-pointer"
+                  >
+                    Privacy Policy
+                  </a>
+                </p>
               </div>
-              
-              <div className="pt-2">
-                <button 
-                  type="submit" 
-                  className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg transform transition-all duration-200 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                >
-                  Get Started
-                </button>
-              </div>
-              
-              <p className="text-gray-400 text-xs text-center mt-4">
-                By continuing, you agree to our Terms of Service and Privacy Policy.
-              </p>
-            </form>
+            </div>
           </div>
         </div>
       )}
         
       {/* Application content */}
-      <Router>
-        <div className="relative z-10">
-          <Routes>
-            <Route path="/" element={<Hero />} />
-            <Route path="/learn" element={<LearningInterface />} />
-            <Route path="/research" element={<ResearchInterface />} />
-            <Route path="/test" element={<Test />} />
-            <Route path="/og-image" element={<OpenGraphImage />} />
-            <Route path="/og-preview" element={<OGPreview />} />
-            <Route path="/generate" element={<ImageGenerationInterface />} />
-            <Route path="/simple-blur" element={<SimpleBlurForm />} />
-          </Routes>
-          <FloatingBugReport />
-        </div>
-      </Router>
-      
-      {/* Welcome message - only shown after form submission */}
-      {formSubmitted && userData && (
-        <div className="fixed bottom-4 left-4 bg-blue-600/90 text-white px-4 py-2 rounded-full text-sm shadow-lg border border-blue-400/30 backdrop-blur-sm">
-          <div className="flex items-center space-x-2">
-            <div className="bg-white rounded-full p-1">
-              <svg className="h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <span>Welcome, <span className="font-semibold">{userData.name}</span></span>
-          </div>
-        </div>
-      )}
-      
-      {/* Reset button for testing (can be removed in production) */}
-      <button
-        onClick={resetForm}
-        className="fixed top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs z-50 shadow-md transition-colors"
-      >
-        Reset Form
-      </button>
+      <div className="relative z-10 flex-1">
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/learn" element={<LearningInterface />} />
+          <Route path="/research" element={<ResearchInterface />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="/og-image" element={<OpenGraphImage />} />
+          <Route path="/og-preview" element={<OGPreview />} />
+          <Route path="/generate" element={<ImageGenerationInterface />} />
+          <Route path="/simple-blur" element={<SimpleBlurForm />} />
+          <Route path="/microservices" element={<MicroservicesInterface />} />
+        </Routes>
+        <FloatingBugReport />
+      </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
+  );
+};
+
+// Main App component
+function App() {
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
+
+  useEffect(() => {
+    const checkUserData = () => {
+      try {
+        const storedUserData = localStorage.getItem('userData');
+        if (storedUserData) {
+          const parsedUserData = JSON.parse(storedUserData) as UserData;
+          if (parsedUserData && parsedUserData.name && parsedUserData.age) {
+            setUserData(parsedUserData);
+            setFormSubmitted(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data from localStorage:', error);
+        localStorage.removeItem('userData');
+      } finally {
+        setInitialCheckDone(true);
+      }
+    };
+
+    // Check initially
+    checkUserData();
+
+    // Listen for updates
+    const handleUserDataUpdate = () => checkUserData();
+    window.addEventListener('userDataUpdated', handleUserDataUpdate);
+
+    return () => {
+      window.removeEventListener('userDataUpdated', handleUserDataUpdate);
+    };
+  }, []);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/cookies" element={<CookiePolicy />} />
+        <Route path="/*" element={<MainContent />} />
+      </Routes>
+      {formSubmitted && <CookieConsent />}
+    </Router>
   );
 }
 

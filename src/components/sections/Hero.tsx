@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ChevronRight, Search, Cpu, Github, Twitter, 
   Linkedin, Mail, BookOpen, Ship, Cloud, Code2, 
-  Image, Copyright, X, Brain, MessageSquare
+  Image, Copyright, X, Brain, MessageSquare, Server,
+  Users
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { CreditsModal } from '../ui/CreditsModal';
+import { HiringForm } from '../ui/HiringForm';
 import { generateHeroImage } from '@/lib/imageGeneration';
 import { SystemRequirements } from '../SystemRequirements';
 import { SystemRequirementsChecker } from '../SystemRequirementsChecker';
@@ -137,12 +139,122 @@ const CompanySection = () => {
   );
 };
 
+const popularModels = [
+  { 
+    label: 'Llama 3.3 Nemotron Super', 
+    icon: Brain, 
+    color: 'bg-white/5',
+    badge: 'NEW',
+    badgeColor: 'bg-green-500/20 text-green-300', 
+    action: () => window.open('https://build.nvidia.com/nvidia/llama-3_3-nemotron-super-49b-v1', '_blank'),
+    description: '49B parameter model with enhanced reasoning and instruction following'
+  },
+  { 
+    label: 'DeepSeek R1', 
+    icon: Brain, 
+    color: 'bg-white/5',
+    badge: 'NEW',
+    badgeColor: 'bg-blue-500/20 text-blue-300', 
+    action: () => window.open('https://build.nvidia.com/deepseek-ai/deepseek-r1', '_blank'),
+    description: 'Advanced reasoning model with strong mathematical capabilities'
+  },
+  { 
+    label: 'Llama 3.1 Nemotron Nano', 
+    icon: Brain, 
+    color: 'bg-white/5',
+    badge: 'EFFICIENT',
+    badgeColor: 'bg-purple-500/20 text-purple-300', 
+    action: () => window.open('https://build.nvidia.com/nvidia/llama-3_1-nemotron-nano-8b-v1', '_blank'),
+    description: '8B parameter model optimized for efficiency and speed'
+  },
+  { 
+    label: 'Gemma 3', 
+    icon: Brain, 
+    color: 'bg-white/5',
+    badge: 'GOOGLE',
+    badgeColor: 'bg-yellow-500/20 text-yellow-300', 
+    action: () => window.open('https://build.nvidia.com/google/gemma-3-27b-it', '_blank'),
+    description: '27B instruction-tuned model with strong multilingual capabilities'
+  },
+  { 
+    label: 'Phi-4 Multimodal', 
+    icon: Image, 
+    color: 'bg-white/5',
+    badge: 'MICROSOFT',
+    badgeColor: 'bg-blue-500/20 text-blue-300', 
+    action: () => window.open('https://build.nvidia.com/microsoft/phi-4-multimodal-instruct', '_blank'),
+    description: 'Advanced vision-language model with instruction following'
+  },
+  { 
+    label: 'Cosmos Predict', 
+    icon: Brain, 
+    color: 'bg-white/5',
+    badge: 'NVIDIA',
+    badgeColor: 'bg-green-500/20 text-green-300', 
+    action: () => window.open('https://build.nvidia.com/nvidia/cosmos-predict1-7b', '_blank'),
+    description: '7B parameter model specialized in predictive analytics'
+  }
+];
+
+const PopularModelsSection = () => (
+  <div className="mt-12 mb-24 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 space-y-6">
+    <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+      Popular Models
+    </h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {popularModels.map((model) => (
+        <motion.button
+          key={model.label}
+          onClick={model.action}
+          whileHover={{ scale: 1.02 }}
+          className={`relative group overflow-hidden ${model.color} p-6 rounded-xl border border-purple-500/20 
+                     hover:border-purple-500/40 transition-all duration-300 text-left w-full`}
+        >
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-blue-500/10 opacity-0 
+                        group-hover:opacity-100 transition-opacity duration-300" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2.5 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg
+                            group-hover:from-purple-500/30 group-hover:to-blue-500/30 transition-colors">
+                <model.icon className="w-6 h-6 text-purple-400 group-hover:text-purple-300 transition-colors" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg text-white group-hover:text-purple-200 transition-colors">
+                  {model.label}
+                </h3>
+                {model.badge && (
+                  <span className={`inline-block px-2 py-0.5 text-xs rounded-full mt-1 ${model.badgeColor}`}>
+                    {model.badge}
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <p className="text-gray-400 group-hover:text-gray-300 transition-colors text-sm">
+              {model.description}
+            </p>
+
+            {/* Decorative elements */}
+            <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-br from-purple-500/10 to-blue-500/10 
+                          rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+            <div className="absolute -top-6 -left-6 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-purple-500/10 
+                          rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+          </div>
+        </motion.button>
+      ))}
+    </div>
+  </div>
+);
+
 export function Hero() {
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [showBanner, setShowBanner] = useState(true);
-  // showHiringForm state removed
+  const [showHiringForm, setShowHiringForm] = useState(false);
 
   const generateImage = async () => {
     setIsGenerating(true);
@@ -245,6 +357,12 @@ export function Hero() {
       action: () => navigate('/generate')
     },
     { 
+      label: 'Microservices', 
+      icon: Server, 
+      color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
+      action: () => navigate('/microservices')
+    },
+    { 
       label: 'Hook First', 
       icon: Code2, 
       color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
@@ -279,7 +397,7 @@ export function Hero() {
       icon: Code2, 
       color: 'bg-white/5 hover:bg-white/10 backdrop-blur-sm', 
       action: () => window.open('https://commit-synthara.vercel.app', '_blank')
-    }
+    },
   ];
 
   const handleOpenCredits = () => {
@@ -604,24 +722,21 @@ export function Hero() {
           <CompanySection />
         </div>
 
-        {/* Copyright */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-8 text-sm text-gray-400"
-        >
-          <div className="flex items-center justify-center gap-2">
-            <Copyright className="w-4 h-4" />
-            <span>Synthara 2025. All rights reserved.</span>
-          </div>
-        </motion.div>
-
         {/* System Requirements */}
         <div className="mt-16" id="system-requirements">
           <SystemRequirementsChecker />
         </div>
       </div>
+      {showHiringForm && (
+        <HiringForm 
+          isOpen={showHiringForm} 
+          onClose={() => {
+            console.log('Closing hiring form'); // Add this for debugging
+            setShowHiringForm(false);
+          }} 
+        />
+      )}
+      <PopularModelsSection />
     </div>
   );
 }

@@ -164,7 +164,7 @@ export function CreditsModal({ onClose }: CreditsModalProps) {
             <p className="flex items-center justify-center gap-2">
               Maranatha Prayer Fellowship. <span className="text-red-400">❤️</span> With love, Niladri Das.
             </p>
-            <p className="mt-1">© 2025 All rights reserved</p>
+            <p className="mt-1">© 2025 Niladri Das. All rights reserved.</p>
           </motion.div>
         </div>
       </div>
